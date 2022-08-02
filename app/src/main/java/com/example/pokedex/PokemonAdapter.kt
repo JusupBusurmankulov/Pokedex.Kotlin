@@ -7,7 +7,6 @@ import android.view.OnReceiveContentListener
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.pokedex.databinding.ActivityDetailBinding
 import com.example.pokedex.databinding.ItemPokemonBinding
 
 class PokemonAdapter(val list: ArrayList<PokemonModel>, var listener: ItemClicker):RecyclerView.Adapter<PokemonAdapter.PokemonViewHolder>() {

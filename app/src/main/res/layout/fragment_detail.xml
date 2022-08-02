@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:paddingHorizontal="10dp"
     android:paddingVertical="15dp"
-    tools:context=".DetailActivity">
+    tools:context=".DetailFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container_detail"

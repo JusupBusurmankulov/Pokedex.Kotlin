@@ -2,42 +2,71 @@ package com.example.pokedex
 
 import android.content.Intent
 import android.content.res.ColorStateList
-import android.graphics.Color.parseColor
+import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
-import com.example.pokedex.databinding.ActivityDetailBinding
-
-class DetailActivity : AppCompatActivity() {
-    lateinit var binding: ActivityDetailBinding
-    var int:Int? = null
-    var int2:Int? = null
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityDetailBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        binding.btnEvBack.visibility = View.GONE
-        initDetail()
+import android.view.ViewGroup
+import android.view.Window
+import android.view.animation.AnimationUtils
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.example.pokedex.databinding.FragmentDetailBinding
+import com.google.android.material.progressindicator.LinearProgressIndicator
 
 
+class DetailFragment : Fragment() {
+    lateinit var binding: FragmentDetailBinding
+    var int: Int? = null
+    var int2: Int? = null
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentDetailBinding.inflate(layoutInflater)
+        return binding.root
     }
 
-    fun initDetail() {
-        val pokemonModel: PokemonModel = intent.getSerializableExtra("model") as PokemonModel
-        if (pokemonModel.name1.isEmpty()){
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.btnBack.setOnClickListener {
+            findNavController().navigate(R.id.pokemonFragment)
+        }
+        val window = activity?.window
+
+        val pokemonModel: PokemonModel = arguments?.getSerializable("model") as PokemonModel
+        changeSolidColor(binding.containerDetail, pokemonModel.backgroundColor)
+
+        if (window != null) {
+            changeColorStatusBar(window, pokemonModel.backgroundColor)
+        }
+        binding.btnEvBack.visibility = View.GONE
+
+
+        if (pokemonModel.name1.isEmpty()) {
             binding.btnEvGo.visibility = View.GONE
         }
-        if (pokemonModel.name3.isEmpty()){
+        if (pokemonModel.name3.isEmpty()) {
             int2 = 2
         }
-        if (pokemonModel.name2.isEmpty()){
+        if (pokemonModel.name2.isEmpty()) {
             int2 = 1
         }
+        binding.pokeonDetail.setOnClickListener {
+            val animation = AnimationUtils.loadAnimation(requireContext(), R.anim.anim)
+            binding.pokeonDetail.startAnimation(animation)
 
 
+            val bottomDialogFragment = BottomDialogFragment()
+            bottomDialogFragment.show(requireActivity().supportFragmentManager, "")
+            val bundle = Bundle()
+            bundle.putSerializable("key", pokemonModel)
+            bottomDialogFragment.arguments = bundle
+
+        }
         changeSolidColor(binding.containerDetail, pokemonModel.backgroundColor)
         changeSolidColor(binding.firstType, pokemonModel.backgroundColor)
         changeSolidColor(binding.secondType, pokemonModel.backgroundColor)
@@ -49,14 +78,14 @@ class DetailActivity : AppCompatActivity() {
         binding.idNameDetail.text = pokemonModel.name
         binding.numberDetail.text = pokemonModel.number
         binding.pokeonDetail.setImageResource(pokemonModel.image)
-        binding.about.setTextColor(parseColor(pokemonModel.backgroundColor))
-        binding.hpPokemon.setTextColor(parseColor(pokemonModel.backgroundColor))
-        binding.atkPokemon.setTextColor(parseColor(pokemonModel.backgroundColor))
-        binding.spdPokemon.setTextColor(parseColor(pokemonModel.backgroundColor))
-        binding.defPokemon.setTextColor(parseColor(pokemonModel.backgroundColor))
-        binding.satkPokemon.setTextColor(parseColor(pokemonModel.backgroundColor))
-        binding.sdefPokemon.setTextColor(parseColor(pokemonModel.backgroundColor))
-        binding.baseStats.setTextColor(parseColor(pokemonModel.backgroundColor))
+        binding.about.setTextColor(Color.parseColor(pokemonModel.backgroundColor))
+        binding.hpPokemon.setTextColor(Color.parseColor(pokemonModel.backgroundColor))
+        binding.atkPokemon.setTextColor(Color.parseColor(pokemonModel.backgroundColor))
+        binding.spdPokemon.setTextColor(Color.parseColor(pokemonModel.backgroundColor))
+        binding.defPokemon.setTextColor(Color.parseColor(pokemonModel.backgroundColor))
+        binding.satkPokemon.setTextColor(Color.parseColor(pokemonModel.backgroundColor))
+        binding.sdefPokemon.setTextColor(Color.parseColor(pokemonModel.backgroundColor))
+        binding.baseStats.setTextColor(Color.parseColor(pokemonModel.backgroundColor))
         binding.progressBarHP.setProgress(pokemonModel.hp)
         binding.progressBarAtk.setProgress(pokemonModel.atk)
         binding.progressBarDef.setProgress(pokemonModel.def)
@@ -64,17 +93,17 @@ class DetailActivity : AppCompatActivity() {
         binding.progressBarSatk.setProgress(pokemonModel.satk)
         binding.progressBarSpd.setProgress(pokemonModel.spd)
         binding.progressBarHP.progressTintList =
-            ColorStateList.valueOf(parseColor(pokemonModel.backgroundColor))
+            ColorStateList.valueOf(Color.parseColor(pokemonModel.backgroundColor))
         binding.progressBarAtk.progressTintList =
-            ColorStateList.valueOf(parseColor(pokemonModel.backgroundColor))
+            ColorStateList.valueOf(Color.parseColor(pokemonModel.backgroundColor))
         binding.progressBarDef.progressTintList =
-            ColorStateList.valueOf(parseColor(pokemonModel.backgroundColor))
+            ColorStateList.valueOf(Color.parseColor(pokemonModel.backgroundColor))
         binding.progressBarSdef.progressTintList =
-            ColorStateList.valueOf(parseColor(pokemonModel.backgroundColor))
+            ColorStateList.valueOf(Color.parseColor(pokemonModel.backgroundColor))
         binding.progressBarSatk.progressTintList =
-            ColorStateList.valueOf(parseColor(pokemonModel.backgroundColor))
+            ColorStateList.valueOf(Color.parseColor(pokemonModel.backgroundColor))
         binding.progressBarSpd.progressTintList =
-            ColorStateList.valueOf(parseColor(pokemonModel.backgroundColor))
+            ColorStateList.valueOf(Color.parseColor(pokemonModel.backgroundColor))
         binding.hp.text = pokemonModel.hp.toString()
         binding.atk.text = pokemonModel.atk.toString()
         binding.satk.text = pokemonModel.satk.toString()
@@ -85,13 +114,9 @@ class DetailActivity : AppCompatActivity() {
         binding.superPokemon.text = pokemonModel.superPokemon
         binding.kg.text = pokemonModel.weight
         binding.m.text = pokemonModel.height
-        binding.btnBack.setOnClickListener {
-            val intent: Intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-        }
         binding.btnEvGo.setOnClickListener {
 
-            if (int == 2 ) {
+            if (int == 2) {
                 binding.progressBarHP.setProgress(pokemonModel.hp3)
                 binding.progressBarAtk.setProgress(pokemonModel.atk3)
                 binding.progressBarDef.setProgress(pokemonModel.def3)
@@ -113,8 +138,8 @@ class DetailActivity : AppCompatActivity() {
                 binding.btnEvGo.visibility = View.GONE
                 int = 3
             }
-            if (int == 1){
-                if (int2 == 2){
+            if (int == 1) {
+                if (int2 == 2) {
                     binding.btnEvGo.visibility = View.GONE
                 }
                 binding.progressBarHP.setProgress(pokemonModel.hp2)
@@ -137,8 +162,8 @@ class DetailActivity : AppCompatActivity() {
                 binding.pokeonDetail.setImageResource(pokemonModel.image2)
                 int = 2
             }
-            if (int == null){
-                if (int2 == 1){
+            if (int == null) {
+                if (int2 == 1) {
                     binding.btnEvGo.visibility = View.GONE
                 }
                 binding.progressBarHP.setProgress(pokemonModel.hp1)
@@ -165,7 +190,7 @@ class DetailActivity : AppCompatActivity() {
 
         }
         binding.btnEvBack.setOnClickListener {
-            if (int == 1){
+            if (int == 1) {
                 binding.progressBarHP.setProgress(pokemonModel.hp)
                 binding.progressBarAtk.setProgress(pokemonModel.atk)
                 binding.progressBarDef.setProgress(pokemonModel.def)
@@ -187,7 +212,7 @@ class DetailActivity : AppCompatActivity() {
                 binding.btnEvBack.visibility = View.GONE
                 int = null
             }
-            if (int == 2){
+            if (int == 2) {
                 binding.progressBarHP.setProgress(pokemonModel.hp1)
                 binding.progressBarAtk.setProgress(pokemonModel.atk1)
                 binding.progressBarDef.setProgress(pokemonModel.def1)
@@ -208,7 +233,7 @@ class DetailActivity : AppCompatActivity() {
                 binding.pokeonDetail.setImageResource(pokemonModel.image1)
                 int = 1
             }
-            if (int == 3){
+            if (int == 3) {
                 binding.progressBarHP.setProgress(pokemonModel.hp2)
                 binding.progressBarAtk.setProgress(pokemonModel.atk2)
                 binding.progressBarDef.setProgress(pokemonModel.def2)
@@ -231,18 +256,20 @@ class DetailActivity : AppCompatActivity() {
                 binding.btnEvGo.visibility = View.VISIBLE
             }
         }
-
-
-
-
     }
 
 
-    private fun changeSolidColor(view: View, color: String) {
-        val drawable: GradientDrawable =
-            view.background as GradientDrawable
+    fun changeColorStatusBar(window: Window, color: String) {
+        window.statusBarColor = Color.parseColor(color)
+    }
+
+
+    fun changeSolidColor(view: View, color: String) {
+        val drawable: GradientDrawable = view.background as GradientDrawable
         drawable.mutate()
-        drawable.setColor(parseColor(color))
-        drawable.setStroke(4, parseColor(color))
+        drawable.setStroke(4, Color.parseColor(color))
+        drawable.setColor(Color.parseColor(color))
     }
+
+
 }
